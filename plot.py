@@ -20,10 +20,42 @@ import plotly.graph_objs as go
 
 # Create random data with numpy
 import numpy as np
+SIZE_OF_GRAPH = 10
+BOX_SIZE = 5
+#Max size of graph if size=10 is 20x20 because the walk can put you at 20
+#if no walk it is 10x10
+random_x = []
+random_y = []
+box_array = []
+max_x = SIZE_OF_GRAPH*2
+max_y = SIZE_OF_GRAPH*2
+count=0
+box_name = 'box'
+
+while max_x<0 and max_y<0: # change this to while they are both greater then -max and less than max
+    #box_name+=str(count)
+    #box_array[count]
+    x1 = -max_x
+    y1 = -max_y
+    x2 = x1+BOX_SIZE
+    y2 = y1+BOX_SIZE
+
+    box_array[count] = [x1,-y1,
+                        x2,-y1,
+                        x1,-y2,
+                        x2,-y2] #probably need 4 sets of coordinates in here 
+    
+
+
+
+
 N = int(input("How many nodes would you like to run this simulation with? "))
 #print("Nodes: ",N)
-random_x = np.random.randn(N)
-random_y = np.random.randn(N)
+for i in range (0,N):
+    random_x.append(np.random.uniform(-SIZE_OF_GRAPH, SIZE_OF_GRAPH))
+    random_y.append(np.random.uniform(-SIZE_OF_GRAPH, SIZE_OF_GRAPH))
+print(random_x)
+print(random_y)
 # Create a trace
 trace = go.Scatter(
     x = random_x,
@@ -46,10 +78,10 @@ py.plot(data, filename=nameOfFile)
 
 #modify the x and y values "the random walk"
 for x in range(0,len(random_x)):
-    movex = np.random.randn()
-    movey = np.random.randn()
+    movex = np.random.uniform(-SIZE_OF_GRAPH, SIZE_OF_GRAPH)
+    movey = np.random.uniform(-SIZE_OF_GRAPH, SIZE_OF_GRAPH)
     random_x[x] += movex
-    random_x[x] += movey
+    random_y[x] += movey
 
 #second trace
 trace2 = go.Scatter(

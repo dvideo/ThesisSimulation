@@ -1,0 +1,29 @@
+https://web.a.ebscohost.com/abstract?direct=true&profile=ehost&scope=site&authtype=crawler&jrnl=09765697&AN=124636335&h=OWqwv8x7CZ2s%2fFllFcoSEBrijdr1h3K5B6OrcwBBYTENJ%2fa6azbz9ZxBGw7zbr%2fpMZgtftvl3DHYpxTRFXPz2A%3d%3d&crl=c&resultNs=AdminWebAuth&resultLocal=ErrCrlNotAuth&crlhashurl=login.aspx%3fdirect%3dtrue%26profile%3dehost%26scope%3dsite%26authtype%3dcrawler%26jrnl%3d09765697%26AN%3d124636335
+
+blockchain - something I should dive into deeper immediately because I have interest or should I wait
+
+scalability is the big problem that sql databases have (facebook,IBM)
+Database paper doesn't really list open problems.  It talks about why you would use a NoSQL database and the system model you would want to use, but no problems.
+
+spoofing is a problem in games such as pokemon go - annoys me
+
+In cryptography, a cryptosystem is a suite of cryptographic algorithms needed to implement a particular security service, most commonly for achieving confidentiality (encryption). Typically, a cryptosystem consists of three algorithms: one for key generation, one for encryption, and one for decryption.
+
+
+http://shenh.people.clemson.edu/publishedPaper/Conference/2016/CSIoT-ICCCNWorkshop2016.pdf
+
+For bitcoin forks
+https://www.investopedia.com/terms/h/hard-fork.asp
+https://www.coindesk.com/short-guide-bitcoin-forks-explained/
+
+
+https://blockgeeks.com/guides/blockchain-scalability/
+For scalability 
+
+
+https://www.youtube.com/watch?v=OWR7Q5BtY14  - video for PIR with compressed queries 
+https://eprint.iacr.org/2017/1142.pdf - here is paper for PIR with compressed queries for the video
+
+
+
+
