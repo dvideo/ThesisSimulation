@@ -1,0 +1,2 @@
+flex - graphical user interface - a way to do graphical coding and display a graph
+flex simulation

@@ -62,6 +62,12 @@ for i in range(0,NUM_OF_BOXES):
     y2+=BOX_SIZE
 
 
+
+for x in range(0,len(box_array)):
+    print(box_array[x])
+
+
+
 N = int(input("How many nodes would you like to run this simulation with? "))
 #print("Nodes: ",N)
 for i in range (0,N):
