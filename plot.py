@@ -22,31 +22,41 @@ import plotly.graph_objs as go
 import numpy as np
 def main():
     SIZE_OF_GRAPH = 20  #these numbers must be divisible with a remainder of 0
-    MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/2)
-    BOX_SIZE = 5
-    NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2)
-    NUM_OF_CHANNELS = [0] * 32
+    MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/2) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
+    BOX_SIZE = 5 #length and width of boxes
+    NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2) #number of total boxes that we will have in the entire graph
+    NUM_OF_CHANNELS = 32 #number of channels per box
 
     #Max size of graph if size=10 is 20x20 because the walk can put you at 20
     #if no walk it is 10x10
-    random_x = []
-    random_y = []
-    box_array = []
+    random_x = [] #initialization of array for x values for graph
+    random_y = [] #initialization of array for y values for graph
+    box_array = [] #initialization of array for all coordinates for all boxes on graphs
+    node_in_box_array = [] #initialization of array for the boxes that the nodes generated are in
+
+    w, h = NUM_OF_CHANNELS,NUM_OF_BOXES*NUM_OF_BOXES; #width and height of all_channels (2d array). 
+                                                          #Num of channels is squared beacuse num of channels only gives you the length in one row of boxes, across the graph
+    all_channels = [[0 for x in range(w)] for y in range(h)] # initialize the all_channels with all 0's
     # max_x = SIZE_OF_GRAPH
     # max_y = SIZE_OF_GRAPH
-    box_name = 'box'
+    # box_name = 'box'
     x1 = -SIZE_OF_GRAPH
     y1 = -SIZE_OF_GRAPH
     x2 = x1+BOX_SIZE
     y2 = y1+BOX_SIZE
 
-    createBoxes(x1,x2,y1,y2,box_array,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES)
-    createGraph1(random_x,random_y,MAX_AXIS_VALUE,box_array)
-    graphWalk(random_x,random_y,MAX_AXIS_VALUE)
-    # for x in range(0,len(box_array)):
-    #     print(box_array[x])
+    create_boxes(x1,x2,y1,y2,box_array,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES)
+    create_graph(random_x,random_y,MAX_AXIS_VALUE,box_array)
+    node_in_box(random_x,random_y,box_array,node_in_box_array)
+    # graph_walk(random_x,random_y,MAX_AXIS_VALUE)
+    create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels)
 
-def createBoxes(x1,x2,y1,y2,box_array,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
+    print(node_in_box_array)
+
+    for i in range(0,len(node_in_box_array)):
+        print(all_channels[i])
+
+def create_boxes(x1,x2,y1,y2,box_array,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
     for i in range(0,NUM_OF_BOXES):
         x1 = -SIZE_OF_GRAPH
         x2 = x1+BOX_SIZE
@@ -61,7 +71,7 @@ def createBoxes(x1,x2,y1,y2,box_array,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
         y2+=BOX_SIZE
 
 
-def createGraph1(random_x,random_y,MAX_AXIS_VALUE,box_array):
+def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_array):
     import numpy as np
     N = int(input("How many nodes would you like to run this simulation with? "))
     #print("Nodes: ",N)
@@ -92,7 +102,7 @@ def createGraph1(random_x,random_y,MAX_AXIS_VALUE,box_array):
 
     # or plot with: plot_url = py.plot(data, filename='basic-line')
 
-def graphWalk(random_x,random_y, MAX_AXIS_VALUE):
+def graph_walk(random_x,random_y, MAX_AXIS_VALUE):
     #Modify the x and y value
     for x in range(0,len(random_x)):
         movex = np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE)
@@ -108,7 +118,7 @@ def graphWalk(random_x,random_y, MAX_AXIS_VALUE):
     )
 
 
-    #first trace
+    #second trace
     data2 = [trace2]
     #this makes the file name random so that the file isnt overwritten 
     #each time this program runs
@@ -117,5 +127,27 @@ def graphWalk(random_x,random_y, MAX_AXIS_VALUE):
 
     # Plot and embed in ipython notebook!
     py.plot(data2, filename=nameOfFile2)
+
+def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
+    for i in range (0,NUM_OF_BOXES*NUM_OF_BOXES):
+        for j in range (0,NUM_OF_CHANNELS):
+            all_channels[i][j] = np.random.randint(0,2) # 0,2 because we want 2 possible states for the channels, 0-off, 1-on
+
+
+def node_in_box(random_x,random_y,box_array,node_in_box_array):
+    for i in range (0,len(random_x)):
+        for j in range(0,len(box_array)):
+            if(random_x[i]>=box_array[j][0] and random_x[i]<=box_array[j][2] and random_y[i]<=box_array[j][1] and random_y[i]>=box_array[j][5]):
+              print(j)
+              print(i)
+              node_in_box_array.append(j)
+              # print(box_array[j])
+              # print(random_x[i])
+              # print(random_y[i])
+              # print(box_array[j][0])
+              # print(box_array[j][2])
+              # print(box_array[j][1])
+              # print(box_array[j][5])
+              print("\n")
 
 main()
