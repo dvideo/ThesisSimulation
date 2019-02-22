@@ -47,14 +47,21 @@ def main():
 
     create_boxes(x1,x2,y1,y2,box_array,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES)
     create_graph(random_x,random_y,MAX_AXIS_VALUE,box_array)
+
     node_in_box(random_x,random_y,box_array,node_in_box_array)
-    # graph_walk(random_x,random_y,MAX_AXIS_VALUE)
-    create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels)
-
     print(node_in_box_array)
-
     for i in range(0,len(node_in_box_array)):
         print(all_channels[i])
+
+    node_in_box_array = [] #make the array empty again so you can add new channels and display them
+    graph_walk(random_x,random_y,MAX_AXIS_VALUE)
+    create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels)
+
+    node_in_box(random_x,random_y,box_array,node_in_box_array)
+    print(node_in_box_array)
+    for i in range(0,len(node_in_box_array)):
+        print(all_channels[i])
+    
 
 def create_boxes(x1,x2,y1,y2,box_array,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
     for i in range(0,NUM_OF_BOXES):
