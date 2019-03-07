@@ -10,6 +10,7 @@ def main():
     BOX_SIZE = 5 #length and width of boxes on graph
     NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2) #number of boxes in 1 row of graph (to get all boxes, square this number)
     NUM_OF_CHANNELS = 32 #number of channels per box
+    NUM_OF_WALKS = 4
 
     #Max size of graph if size=10 is 20x20 because the walk can put you at 20
     #if no walk, graph size is 10x10
@@ -28,7 +29,11 @@ def main():
 
     #create the graph, the boxes on the graph, and the channels for the boxes
     create_boxes(x1,x2,y1,y2,box_list,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES)
+
+    readFile(random_x,random_y)
+
     create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list)
+    
     create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels)
 
     #find out what boxes the nodes are in
@@ -42,7 +47,7 @@ def main():
     node_in_box_list = [] #make the list empty again so you can add new channels and display them
     
     #let nodes move on the graph
-    graph_walk(random_x,random_y,MAX_AXIS_VALUE)
+    graph_walk(random_x,random_y,MAX_AXIS_VALUE,NUM_OF_BOXES)
 
     #find out what boxes the nodes that have walked are in
     node_in_box(random_x,random_y,box_list,node_in_box_list)
@@ -69,16 +74,6 @@ def create_boxes(x1,x2,y1,y2,box_list,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
 
 
 def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list):
-    node_number = int(input("How many nodes would you like to run this simulation with? "))
-    #print("Nodes: ",N)
-    for i in range (node_number):
-        random_x.append(np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE)) #get a random float number within given range
-        random_y.append(np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE)) #get a random float number within given range
-        # for j in range(0,len(box_list)): #check what box each of the x,y vgvalues lands in
-        #     if(random_x[i]>=box_list[j][0] and random_x[i]<=box_list[j][2] and random_y[i]<=box_list[j][1] and random_y[i]>=box_list[j][5]):
-        #         print("j",j)
-        #         print("j in array",box_list[j])
-    print("random x:",random_x,"\nrandom y:",random_y)
     # Create a trace
     trace = go.Scatter(
         x = random_x,
@@ -97,7 +92,7 @@ def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list):
 
     # or plot with: plot_url = py.plot(data, filename='basic-line')
 
-def graph_walk(random_x,random_y, MAX_AXIS_VALUE):
+def graph_walk(random_x,random_y, MAX_AXIS_VALUE, NUM_OF_BOXES):
     #Modify the x and y value
     for x in range(len(random_x)):
         movex = np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE) #get a random float number within given range
@@ -146,5 +141,21 @@ def node_in_box(random_x,random_y,box_list,node_in_box_list):
               # print(box_list[j][1])
               # print(box_list[j][5])
               # print("\n")
+
+
+def readFile(random_x,random_y):
+    file = open('axisValues.txt','r')
+    # file = file.readline()
+    # file = string.split(numbers)
+    count = 0
+    for line in file:
+        line = line.rstrip('\n')
+        if count%2==0:
+            random_x.append(float(line))
+        else:
+            random_y.append(float(line))
+        #print("hi")
+        count+=1
+        # print(line)
 
 main()
