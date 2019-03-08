@@ -42,7 +42,7 @@ def main():
     nodes_in_dictionary(random_x,random_y,nodes_dictionary)
    
 
-    # create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list)
+    create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list)
     
     create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels)
 
@@ -132,22 +132,22 @@ def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,
                 nodes_dictionary[x].boxes_passed.pop(0)
 
     #second trace
-    # trace2 = go.Scatter(
-    #     x = random_x,
-    #     y = random_y,
-    #     mode = 'markers'
-    # )
+    trace2 = go.Scatter(
+        x = random_x,
+        y = random_y,
+        mode = 'markers'
+    )
 
     # print("random x:",random_x,"\nrandom y:",random_y)
     #second trace
-    # data2 = [trace2]
+    data2 = [trace2]
     #this makes the file name random so that the file isnt overwritten 
     #each time this program runs
-    # randFileName2 = np.random.randn()
-    # nameOfFile2 = "scatterWALK"+ str(randFileName2)
+    randFileName2 = np.random.randn()
+    nameOfFile2 = "scatterWALK"+ str(randFileName2)
 
     # Plot and embed in ipython notebook!
-    # py.plot(data2, filename=nameOfFile2)
+    py.plot(data2, filename=nameOfFile2)
 
 def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
     for i in range (NUM_OF_BOXES*NUM_OF_BOXES):
