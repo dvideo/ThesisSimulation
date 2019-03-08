@@ -342,7 +342,7 @@ def main():
 		print (i)
 
 '''
-
+'''
 def main():
 	string = 'LLLM'
 	print(convertRomanNumeral(string))
@@ -364,4 +364,18 @@ def convertRomanNumeral(string):
 	return count
 
  
+main()
+'''
+
+
+array = [10]
+def main():
+	print(array)
+	function1()
+	print(array)
+
+
+
+def function1():
+	array[0] = 3
 main()
