@@ -2,10 +2,15 @@
 import plotly.plotly as py
 import plotly.graph_objs as go
 
-# Create random data with numpy
+#Create random data with numpy
 import numpy as np
 
+#Node object file
 import nodeClass as nc
+
+#Cluster object file
+import clusters as cl
+
 def main():
     SIZE_OF_GRAPH = 20  #this value and max axis value must be divisible with a remainder of 0
     MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/2) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
@@ -13,6 +18,7 @@ def main():
     NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2) #number of boxes in 1 row of graph (to get all boxes, square this number)
     NUM_OF_CHANNELS = 32 #number of channels per box
     NUM_OF_WALKS = 2
+    CLUSTER_SIZE = 3
 
     #Max size of graph if size=10 is 20x20 because the walk can put you at 20
     #if no walk, graph size is 10x10
@@ -21,6 +27,7 @@ def main():
     box_list = [] #initialization of list for all coordinates for all boxes on graphs
     node_in_box_list = [] #initialization of list for the boxes that the nodes generated are in
     nodes_dictionary = {}
+    cluster_dictionary = {}
 
     w, h = NUM_OF_CHANNELS,NUM_OF_BOXES*NUM_OF_BOXES; #width and height of all_channels (2d list/matrix). 
                                                           #Num of channels is squared beacuse num of channels only gives you the length in one row of boxes, across the graph
@@ -40,9 +47,14 @@ def main():
     readFile(random_x,random_y)
 
     nodes_in_dictionary(random_x,random_y,nodes_dictionary)
+
+    clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary)
+
+    for i in range (0,len(cluster_dictionary)):
+        print("cluster: ", i , " ",cluster_dictionary[i].nodes_in_cluster)
    
 
-    create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list)
+    # create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list)
     
     create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels)
 
@@ -126,33 +138,33 @@ def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,
             node_in_box(box_list,nodes_dictionary,x)
             # print("if ",i)
             #this removes channel the oldest channel every loop after the 2nd walk
-            if(i>=1):
+            # if(i>=1):  bring this back for "forgetting nodes"
                 # print("hi")
                 # for j in range(0,len(nodes_dictionary)):
-                nodes_dictionary[x].boxes_passed.pop(0)
+                # nodes_dictionary[x].boxes_passed.pop(0) bring this back for "forgetting nodes"
 
     #second trace
-    trace2 = go.Scatter(
-        x = random_x,
-        y = random_y,
-        mode = 'markers'
-    )
+    # trace2 = go.Scatter(
+    #     x = random_x,
+    #     y = random_y,
+    #     mode = 'markers'
+    # )
 
     # print("random x:",random_x,"\nrandom y:",random_y)
     #second trace
-    data2 = [trace2]
+    # data2 = [trace2]
     #this makes the file name random so that the file isnt overwritten 
     #each time this program runs
-    randFileName2 = np.random.randn()
-    nameOfFile2 = "scatterWALK"+ str(randFileName2)
+    # randFileName2 = np.random.randn()
+    # nameOfFile2 = "scatterWALK"+ str(randFileName2)
 
     # Plot and embed in ipython notebook!
-    py.plot(data2, filename=nameOfFile2)
+    # py.plot(data2, filename=nameOfFile2)
 
 def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
     for i in range (NUM_OF_BOXES*NUM_OF_BOXES):
         for j in range (NUM_OF_CHANNELS):
-            all_channels[i][j] = np.random.randint(0,2) # 0,2 because we want 2 possible states for the channels, 0-off, 1-on
+            all_channels[i][j] = np.random.randint(0,3) # 0,2 because we want 2 possible states for the channels, 0-off, 1-on
         # print(all_channels)
 
 # def refresh_channels():
@@ -196,7 +208,25 @@ def readFile(random_x,random_y):
 def nodes_in_dictionary(random_x,random_y,nodes_dictionary):
     #create node obj for the nodes and store those in a dictionary
     for i in range(0,len(random_x)):
-        nodes_dictionary[i] = nc.Node(random_x[i],random_y[i])
+        nodes_dictionary[i] = nc.Node(random_x[i],random_y[i],i)
+
+def clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary):
+    num_of_clusters = len(nodes_dictionary)//CLUSTER_SIZE
+    left_overs = len(nodes_dictionary)%CLUSTER_SIZE
+    count = 0
+    for j in range(num_of_clusters):
+        cluster_dictionary[j] = cl.Cluster()
+        if j == num_of_clusters-1 and left_overs>0:
+            for i in range(CLUSTER_SIZE+left_overs):
+                # index = (j*CLUSTER_SIZE)+i
+                cluster_dictionary[j].nodes_in_cluster.append(count)
+                count+=1
+        else:
+            for i in range(CLUSTER_SIZE):
+                # index = (j*CLUSTER_SIZE)+i
+                cluster_dictionary[j].nodes_in_cluster.append(count)
+                count+=1
+
 
 
 main()

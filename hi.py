@@ -367,7 +367,7 @@ def convertRomanNumeral(string):
 main()
 '''
 
-
+'''
 array = [10]
 def main():
 	print(array)
@@ -378,4 +378,16 @@ def main():
 
 def function1():
 	array[0] = 3
+'''
+
+
+def main():
+	nuggets = [0,1]
+	for i in range(len(nuggets)):
+		if i == len(nuggets)-1:
+			print(i)
+
+	# print(len(nuggets))
+
+	# print(3//10)
 main()
