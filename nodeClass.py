@@ -1,10 +1,11 @@
 class Node:
-	def __init__(self,x_val,y_val,node_num):
+	def __init__(self,x_val,y_val):
 		# self.node_num = None#node_num
 		self.x_val = x_val
 		self.y_val = y_val
 		self.boxes_passed = []
-		self.node_num = node_num
+		self.coordinates = [[]]
+		
 
 
 

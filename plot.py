@@ -77,7 +77,7 @@ def main():
     graph_walk(random_x,random_y, MAX_AXIS_VALUE, BOX_SIZE, NUM_OF_WALKS,box_list,nodes_dictionary)
 
     for i in range(0,len(nodes_dictionary)):
-        print(i, " ",nodes_dictionary[i].x_val, " ", nodes_dictionary[i].y_val, " ",nodes_dictionary[i].boxes_passed)
+        print(i, " ", nodes_dictionary[i].coordinates, " ",nodes_dictionary[i].boxes_passed)
         for j in range (0,len(nodes_dictionary[i].boxes_passed)):
             print('channels: ', all_channels[nodes_dictionary[i].boxes_passed[j]])
     #find out what boxes the nodes that have walked are in
@@ -125,17 +125,27 @@ def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list):
 
 def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,nodes_dictionary):
     #Modify the x and y value
-    for x in range(len(random_x)):
+    for j in range(len(random_x)):
         for i in range (0,NUM_OF_WALKS): #here
-            movex = np.random.uniform(-BOX_SIZE, BOX_SIZE) #get a random float number within given range
-            movey = np.random.uniform(-BOX_SIZE, BOX_SIZE) #get a random float number within given range
+            movex = np.random.randint(0,3) #get a random float number within given range
+            movey = np.random.randint(0,3) #get a random float number within given range
+            if movex==1:
+                nodes_dictionary[j].x_val += BOX_SIZE
+            if movey==1:
+                nodes_dictionary[j].y_val += BOX_SIZE
+
+            if movex==2:
+                nodes_dictionary[j].x_val += -BOX_SIZE
+            if movey==2:
+                nodes_dictionary[j].y_val += -BOX_SIZE
+
             # node_in_box()
             #Add the new values to existing values to get new x,y
-            nodes_dictionary[x].x_val += movex
-            nodes_dictionary[x].y_val += movey
+           
+           
             # print("x: ",x)
 
-            node_in_box(box_list,nodes_dictionary,x)
+            node_in_box(box_list,nodes_dictionary,j)
             # print("if ",i)
             #this removes channel the oldest channel every loop after the 2nd walk
             # if(i>=1):  bring this back for "forgetting nodes"
@@ -169,15 +179,16 @@ def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
 
 # def refresh_channels():
 
-def node_in_box(box_list, nodes_dictionary,x):
+def node_in_box(box_list, nodes_dictionary,nodeNum):
     # for i in range (len(random_x)):
-    temp_node = nodes_dictionary[x]
+    temp_node = nodes_dictionary[nodeNum]
     # print(temp_node.x_val, " ", temp_node.y_val, " ", x)
     for j in range(len(box_list)):
         #check a node lands within a boxes x,y pairs, save that box to an array
         if(temp_node.x_val>=box_list[j][0] and temp_node.x_val<=box_list[j][2] and temp_node.y_val<=box_list[j][1] and temp_node.y_val>=box_list[j][5]):
           # print("j",j,"i",i)
           # node_in_box_list.append(j)
+          temp_node.coordinates.append([temp_node.x_val,temp_node.y_val])
           temp_node.boxes_passed.append(j)
           # print(box_list[j])
           # print(random_x[i])
@@ -208,7 +219,7 @@ def readFile(random_x,random_y):
 def nodes_in_dictionary(random_x,random_y,nodes_dictionary):
     #create node obj for the nodes and store those in a dictionary
     for i in range(0,len(random_x)):
-        nodes_dictionary[i] = nc.Node(random_x[i],random_y[i],i)
+        nodes_dictionary[i] = nc.Node(random_x[i],random_y[i])
 
 def clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary):
     num_of_clusters = len(nodes_dictionary)//CLUSTER_SIZE
