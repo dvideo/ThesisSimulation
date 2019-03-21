@@ -12,7 +12,7 @@ import nodeClass as nc
 import clusters as cl
 
 def main():
-    SIZE_OF_GRAPH = 20  #this value and max axis value must be divisible with a remainder of 0
+    SIZE_OF_GRAPH = 50  #this value and max axis value must be divisible with a remainder of 0
     MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/2) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
     BOX_SIZE = 5 #length and width of boxes on graph
     NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2) #number of boxes in 1 row of graph (to get all boxes, square this number)
@@ -50,8 +50,10 @@ def main():
 
     clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary)
 
+    distance(nodes_dictionary, MAX_AXIS_VALUE)
+
     for i in range (0,len(cluster_dictionary)):
-        print("cluster: ", i , " ",cluster_dictionary[i].nodes_in_cluster)
+        print("cluster: ", i , " ",cluster_dictionary[i].nodes_in_cluster, "  Head: ",cluster_dictionary[i].cluster_head)
    
 
     # create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list)
@@ -103,6 +105,10 @@ def create_boxes(x1,x2,y1,y2,box_list,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
         y1+=BOX_SIZE
         y2+=BOX_SIZE
 
+    #uncomment this to see coordinates and numbers of all boxes
+    # for i in range (len(box_list)):
+    #     print(i," box_list ", box_list[i])
+
 
 def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list):
     # Create a trace
@@ -127,17 +133,17 @@ def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,
     #Modify the x and y value
     for j in range(len(random_x)):
         for i in range (0,NUM_OF_WALKS): #here
-            movex = np.random.randint(0,3) #get a random float number within given range
-            movey = np.random.randint(0,3) #get a random float number within given range
+            movex = np.random.randint(0,2) #get a random float number within given range
+            movey = np.random.randint(0,2) #get a random float number within given range
             if movex==1:
-                nodes_dictionary[j].x_val += BOX_SIZE
+                nodes_dictionary[j].x_val += BOX_SIZE*3
             if movey==1:
-                nodes_dictionary[j].y_val += BOX_SIZE
+                nodes_dictionary[j].y_val += BOX_SIZE*3
 
-            if movex==2:
-                nodes_dictionary[j].x_val += -BOX_SIZE
-            if movey==2:
-                nodes_dictionary[j].y_val += -BOX_SIZE
+            if movex==0:
+                nodes_dictionary[j].x_val += -BOX_SIZE*3
+            if movey==0:
+                nodes_dictionary[j].y_val += -BOX_SIZE*3
 
             # node_in_box()
             #Add the new values to existing values to get new x,y
@@ -178,6 +184,17 @@ def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
         # print(all_channels)
 
 # def refresh_channels():
+
+def distance(nodes_dictionary, MAX_AXIS_VALUE):
+    for i in range (len(nodes_dictionary)):
+        print("n in d i: " , i , " " ,nodes_dictionary[i].x_val, " ", nodes_dictionary[i].y_val)
+        tempx = np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE)
+        tempy = np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE)
+        distancex = nodes_dictionary[i].x_val - tempx
+        distancey = nodes_dictionary[i].y_val - tempy
+        divide3 = distancex/3
+        print("n in d i: " , i , " " ,tempx, " ", tempy, " distancex: ", distancex, " distancey: ", distancey, " divided by 3x: ",distancex/3, " y: ", distancey/3)
+
 
 def node_in_box(box_list, nodes_dictionary,nodeNum):
     # for i in range (len(random_x)):
@@ -227,6 +244,7 @@ def clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary):
     count = 0
     for j in range(num_of_clusters):
         cluster_dictionary[j] = cl.Cluster()
+        #Run this if there are left over nodes and we are on the last cluster that will be bigger than the rest
         if j == num_of_clusters-1 and left_overs>0:
             for i in range(CLUSTER_SIZE+left_overs):
                 # index = (j*CLUSTER_SIZE)+i
@@ -237,7 +255,6 @@ def clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary):
                 # index = (j*CLUSTER_SIZE)+i
                 cluster_dictionary[j].nodes_in_cluster.append(count)
                 count+=1
-
-
+        cluster_dictionary[j].cluster_head = cluster_dictionary[j].nodes_in_cluster[0]
 
 main()

@@ -1,7 +1,7 @@
 import numpy as np
 import nodeClass as nc
 def main():
-	SIZE_OF_GRAPH = 20  #this value and max axis value must be divisible with a remainder of 0
+	SIZE_OF_GRAPH = 50  #this value and max axis value must be divisible with a remainder of 0
 	MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/2) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
 	random_x = [] #initialization of list for x values for graph
 	random_y = [] #initialization of list for y values for graph
