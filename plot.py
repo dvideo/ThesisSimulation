@@ -12,7 +12,7 @@ import nodeClass as nc
 import clusters as cl
 
 def main():
-    SIZE_OF_GRAPH = 50  #this value and max axis value must be divisible with a remainder of 0
+    SIZE_OF_GRAPH = 100  #this value and max axis value must be divisible with a remainder of 0
     MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/2) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
     BOX_SIZE = 5 #length and width of boxes on graph
     NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2) #number of boxes in 1 row of graph (to get all boxes, square this number)
@@ -50,7 +50,7 @@ def main():
 
     clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary)
 
-    distance(nodes_dictionary, MAX_AXIS_VALUE)
+    # distance(nodes_dictionary, MAX_AXIS_VALUE)
 
     for i in range (0,len(cluster_dictionary)):
         print("cluster: ", i , " ",cluster_dictionary[i].nodes_in_cluster, "  Head: ",cluster_dictionary[i].cluster_head)
@@ -78,8 +78,10 @@ def main():
     #let nodes move on the graph
     graph_walk(random_x,random_y, MAX_AXIS_VALUE, BOX_SIZE, NUM_OF_WALKS,box_list,nodes_dictionary)
 
+    send_queries(nodes_dictionary)
+
     for i in range(0,len(nodes_dictionary)):
-        print(i, " ", nodes_dictionary[i].coordinates, " ",nodes_dictionary[i].boxes_passed)
+        print(i, " ", nodes_dictionary[i].coordinates, " ",nodes_dictionary[i].boxes_passed , " ", nodes_dictionary[i].x_walk , " ",nodes_dictionary[i].y_walk )
         for j in range (0,len(nodes_dictionary[i].boxes_passed)):
             print('channels: ', all_channels[nodes_dictionary[i].boxes_passed[j]])
     #find out what boxes the nodes that have walked are in
@@ -130,21 +132,19 @@ def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list):
     # or plot with: plot_url = py.plot(data, filename='basic-line')
 
 def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,nodes_dictionary):
-    #Modify the x and y value
+    #For all the nodes
     for j in range(len(random_x)):
-        for i in range (0,NUM_OF_WALKS): #here
-            movex = np.random.randint(0,2) #get a random float number within given range
-            movey = np.random.randint(0,2) #get a random float number within given range
-            if movex==1:
-                nodes_dictionary[j].x_val += BOX_SIZE*3
-            if movey==1:
-                nodes_dictionary[j].y_val += BOX_SIZE*3
-
-            if movex==0:
-                nodes_dictionary[j].x_val += -BOX_SIZE*3
-            if movey==0:
-                nodes_dictionary[j].y_val += -BOX_SIZE*3
-
+        x_move_val = np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE) #Get the value where x will end
+        y_move_val = np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE) #Get the value where y will end
+        x_distance = random_x[j] - x_move_val #Get the distance between where x currently is and where x will end up
+        y_distance = random_y[j] - y_move_val #Get the distance between where y currently is and where y will end up
+        x_walk = x_distance/NUM_OF_WALKS #The distance x will move per walk
+        y_walk = y_distance/NUM_OF_WALKS #The distance y will move per walk
+        for i in range (0,NUM_OF_WALKS): 
+            nodes_dictionary[j].x_val += x_walk
+            nodes_dictionary[j].y_val += y_walk
+            nodes_dictionary[j].x_walk = x_walk
+            nodes_dictionary[j].y_walk = y_walk
             # node_in_box()
             #Add the new values to existing values to get new x,y
            
@@ -176,6 +176,12 @@ def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,
 
     # Plot and embed in ipython notebook!
     # py.plot(data2, filename=nameOfFile2)
+
+def send_queries(nodes_dictionary):
+    for i in range(len(nodes_dictionary)):
+        print("new x val",nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][0] + nodes_dictionary[i].x_walk)
+        print("new y val",nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][1] + nodes_dictionary[i].y_walk)
+
 
 def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
     for i in range (NUM_OF_BOXES*NUM_OF_BOXES):

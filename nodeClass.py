@@ -4,7 +4,10 @@ class Node:
 		self.x_val = x_val
 		self.y_val = y_val
 		self.boxes_passed = []
-		self.coordinates = [[]]
+		self.coordinates = []
+		self.x_walk = None
+		self.y_walk = None
+
 		
 
 
