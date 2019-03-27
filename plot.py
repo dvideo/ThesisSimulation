@@ -94,6 +94,8 @@ def main():
     # print("node_in_box_list after walk: ", node_in_box_list)
     # for i in range(len(node_in_box_list)):
     #     print("all channesl at i: " ,all_channels[node_in_box_list[i]], "i: " ,i)
+
+    walker_node(SIZE_OF_GRAPH,box_list)
     
 
 def create_boxes(x1,x2,y1,y2,box_list,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
@@ -257,6 +259,7 @@ def nodes_in_dictionary(random_x,random_y,nodes_dictionary):
     for i in range(0,len(random_x)):
         nodes_dictionary[i] = nc.Node(random_x[i],random_y[i])
 
+
 def clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary):
     num_of_clusters = len(nodes_dictionary)//CLUSTER_SIZE
     left_overs = len(nodes_dictionary)%CLUSTER_SIZE
@@ -275,5 +278,47 @@ def clustering(CLUSTER_SIZE,nodes_dictionary,cluster_dictionary):
                 cluster_dictionary[j].nodes_in_cluster.append(count)
                 count+=1
         cluster_dictionary[j].cluster_head = cluster_dictionary[j].nodes_in_cluster[0]
+
+def walker_node(SIZE_OF_GRAPH,box_list):
+    val = SIZE_OF_GRAPH/2
+    x1 = round(np.random.uniform(-val, val),2) #get a random float number within given range
+    y1 = round(np.random.uniform(-val, val),2)
+    x2 = round(np.random.uniform(-val, val),2) #get a random float number within given range
+    y2 = round(np.random.uniform(-val, val),2)
+
+    x_distance = round(x1-x2,2)
+    y_distance = round(y1-y2,2) 
+
+    # print("distance: ", x_distance, " " , y_distance)
+    print("start x,y (",x1,",",y1,") ending x,y (",x2,",",y2,")")
+
+    x_walk = round(x_distance/10,2)
+    y_walk = round(y_distance/10,2)
+
+    for j in range(len(box_list)):
+        # check a node lands within a boxes x,y pairs, save that box to an array
+            if(x2>=box_list[j][0] and x2<=box_list[j][2] and y2<=box_list[j][1] and y2>=box_list[j][5]):
+                final_box = j
+
+
+    ask_clusters = []
+    done=1
+
+    while(done!=0):
+        for j in range(len(box_list)):
+        # check a node lands within a boxes x,y pairs, save that box to an array
+            if(x1>=box_list[j][0] and x1<=box_list[j][2] and y1<=box_list[j][1] and y1>=box_list[j][5]):
+                ask_clusters.append(j)
+                if(j==final_box):
+                    done=0
+
+        x1-=x_walk
+        x1 = round(x1,2)
+        y1-=y_walk
+        y1 = round(y1,2)
+
+
+    print('boxes: ',ask_clusters)
+
 
 main()
