@@ -13,7 +13,7 @@ import clusters as cl
 
 def main():
     SIZE_OF_GRAPH = 100  #this value and max axis value must be divisible with a remainder of 0
-    MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/2) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
+    MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/4) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
     BOX_SIZE = 5 #length and width of boxes on graph
     NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2) #number of boxes in 1 row of graph (to get all boxes, square this number)
     NUM_OF_CHANNELS = 32 #number of channels per box
@@ -78,10 +78,13 @@ def main():
     #let nodes move on the graph
     graph_walk(random_x,random_y, MAX_AXIS_VALUE, BOX_SIZE, NUM_OF_WALKS,box_list,nodes_dictionary)
 
-    send_queries(nodes_dictionary)
+    get_trajectory(nodes_dictionary)
+
+    send_queries(nodes_dictionary,box_list)
 
     for i in range(0,len(nodes_dictionary)):
-        print(i, " ", nodes_dictionary[i].coordinates, " ",nodes_dictionary[i].boxes_passed , " ", nodes_dictionary[i].x_walk , " ",nodes_dictionary[i].y_walk )
+        # print(i, " ", nodes_dictionary[i].coordinates, " ",nodes_dictionary[i].boxes_passed , " ", nodes_dictionary[i].x_walk , " ",nodes_dictionary[i].y_walk )
+        print(i, " ", nodes_dictionary[i].coordinates, " ",nodes_dictionary[i].boxes_passed , " want to go to box: ", nodes_dictionary[i].want_to_go)
         for j in range (0,len(nodes_dictionary[i].boxes_passed)):
             print('channels: ', all_channels[nodes_dictionary[i].boxes_passed[j]])
     #find out what boxes the nodes that have walked are in
@@ -109,7 +112,7 @@ def create_boxes(x1,x2,y1,y2,box_list,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
 
     #uncomment this to see coordinates and numbers of all boxes
     # for i in range (len(box_list)):
-    #     print(i," box_list ", box_list[i])
+        # print(i," box_list ", box_list[i])
 
 
 def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list):
@@ -177,11 +180,20 @@ def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,
     # Plot and embed in ipython notebook!
     # py.plot(data2, filename=nameOfFile2)
 
-def send_queries(nodes_dictionary):
+def get_trajectory(nodes_dictionary):
     for i in range(len(nodes_dictionary)):
-        print("new x val",nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][0] + nodes_dictionary[i].x_walk)
-        print("new y val",nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][1] + nodes_dictionary[i].y_walk)
+        # print("new x val",nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][0] + nodes_dictionary[i].x_walk)
+        new_x = nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][0] + nodes_dictionary[i].x_walk
+        new_y = nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][1] + nodes_dictionary[i].y_walk
+        # print("new y val",nodes_dictionary[i].coordinates[len(nodes_dictionary[i].coordinates)-1][1] + nodes_dictionary[i].y_walk)
+        nodes_dictionary[i].coordinates.append([new_x,new_y])
 
+def send_queries(nodes_dictionary,box_list):
+    for i in range(0,len(nodes_dictionary)):
+        # nodes_dictionary[i].coordinates(len(nodes_dictionary[i].coordinates)-1)
+        # node_in_box()
+        # node_num=i
+        ask_ahead(box_list,nodes_dictionary,i)
 
 def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
     for i in range (NUM_OF_BOXES*NUM_OF_BOXES):
@@ -191,6 +203,7 @@ def create_channels(NUM_OF_CHANNELS,NUM_OF_BOXES,all_channels):
 
 # def refresh_channels():
 
+#can delete this, dont need
 def distance(nodes_dictionary, MAX_AXIS_VALUE):
     for i in range (len(nodes_dictionary)):
         print("n in d i: " , i , " " ,nodes_dictionary[i].x_val, " ", nodes_dictionary[i].y_val)
@@ -202,26 +215,26 @@ def distance(nodes_dictionary, MAX_AXIS_VALUE):
         print("n in d i: " , i , " " ,tempx, " ", tempy, " distancex: ", distancex, " distancey: ", distancey, " divided by 3x: ",distancex/3, " y: ", distancey/3)
 
 
-def node_in_box(box_list, nodes_dictionary,nodeNum):
+def node_in_box(box_list, nodes_dictionary,node_num):
     # for i in range (len(random_x)):
-    temp_node = nodes_dictionary[nodeNum]
-    # print(temp_node.x_val, " ", temp_node.y_val, " ", x)
+    temp_node = nodes_dictionary[node_num]
     for j in range(len(box_list)):
         #check a node lands within a boxes x,y pairs, save that box to an array
         if(temp_node.x_val>=box_list[j][0] and temp_node.x_val<=box_list[j][2] and temp_node.y_val<=box_list[j][1] and temp_node.y_val>=box_list[j][5]):
-          # print("j",j,"i",i)
-          # node_in_box_list.append(j)
           temp_node.coordinates.append([temp_node.x_val,temp_node.y_val])
           temp_node.boxes_passed.append(j)
-          # print(box_list[j])
-          # print(random_x[i])
-          # print(random_y[i])
-          # print(box_list[j][0])
-          # print(box_list[j][2])
-          # print(box_list[j][1])
-          # print(box_list[j][5])
-          # print("\n")
 
+def ask_ahead(box_list, nodes_dictionary,node_num):
+    # x = nodes_dictionary[node_num].coordinates[len(nodes_dictionary[node_num].coordinates)-1][0]
+    # print("this ",x)
+    temp_node = nodes_dictionary[node_num]
+    temp_node_x = nodes_dictionary[node_num].coordinates[len(nodes_dictionary[node_num].coordinates)-1][0]
+    temp_node_y = nodes_dictionary[node_num].coordinates[len(nodes_dictionary[node_num].coordinates)-1][1]
+    for j in range(len(box_list)):
+        # check a node lands within a boxes x,y pairs, save that box to an array
+        if(temp_node_x>=box_list[j][0] and temp_node_x<=box_list[j][2] and temp_node_y<=box_list[j][1] and temp_node_y>=box_list[j][5]):
+            temp_node.want_to_go = j
+          # temp_node.boxes_passed.append(j)   #uncomment this to add the box to the boxes passed array
 
 def readFile(random_x,random_y):
     file = open('axisValues.txt','r')

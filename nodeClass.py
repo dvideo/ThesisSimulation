@@ -7,6 +7,7 @@ class Node:
 		self.coordinates = []
 		self.x_walk = None
 		self.y_walk = None
+		self.want_to_go = None
 
 		
 
