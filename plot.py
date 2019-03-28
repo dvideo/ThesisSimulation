@@ -63,7 +63,7 @@ def main():
 
     #find out what boxes the nodes are in
     for i in range (0,len(nodes_dictionary)):
-        node_in_box(box_list,nodes_dictionary,i,all_channels)
+        node_in_box(box_list,nodes_dictionary,i,all_channels,NUM_OF_CHANNELS)
 
     # for i in range(0,len(nodes_dictionary)):
     #     print(i, " ",nodes_dictionary[i].x_val, " ", nodes_dictionary[i].y_val, " ",nodes_dictionary[i].boxes_passed)
@@ -77,7 +77,7 @@ def main():
     # node_in_box_list = [] #make the list empty again so you can add new channels and display them
     
     #let nodes move on the graph
-    graph_walk(random_x,random_y, MAX_AXIS_VALUE, BOX_SIZE, NUM_OF_WALKS,box_list,nodes_dictionary,all_channels)
+    graph_walk(random_x,random_y, MAX_AXIS_VALUE, BOX_SIZE, NUM_OF_WALKS,box_list,nodes_dictionary,all_channels,NUM_OF_CHANNELS)
 
     get_trajectory(nodes_dictionary)
 
@@ -140,7 +140,7 @@ def create_graph(random_x,random_y,MAX_AXIS_VALUE,box_list):
 
     # or plot with: plot_url = py.plot(data, filename='basic-line')
 
-def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,nodes_dictionary,all_channels):
+def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,nodes_dictionary,all_channels,NUM_OF_CHANNELS):
     #For all the nodes
     for j in range(len(random_x)):
         x_move_val = round(np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE),2) #Get the value where x will end
@@ -160,7 +160,7 @@ def graph_walk(random_x,random_y, MAX_AXIS_VALUE,BOX_SIZE,NUM_OF_WALKS,box_list,
            
             # print("x: ",x)
 
-            node_in_box(box_list,nodes_dictionary,j,all_channels)
+            node_in_box(box_list,nodes_dictionary,j,all_channels,NUM_OF_CHANNELS)
             # print("if ",i)
             #this removes channel the oldest channel every loop after the 2nd walk
             # if(i>=1):  bring this back for "forgetting nodes"
@@ -227,7 +227,7 @@ def distance(nodes_dictionary, MAX_AXIS_VALUE):
         print("n in d i: " , i , " " ,tempx, " ", tempy, " distancex: ", distancex, " distancey: ", distancey, " divided by 3x: ",distancex/3, " y: ", distancey/3)
 
 
-def node_in_box(box_list, nodes_dictionary,node_num,all_channels):
+def node_in_box(box_list, nodes_dictionary,node_num,all_channels,NUM_OF_CHANNELS):
     # for i in range (len(random_x)):
     temp_node = nodes_dictionary[node_num]
     for j in range(len(box_list)):
@@ -237,7 +237,7 @@ def node_in_box(box_list, nodes_dictionary,node_num,all_channels):
           temp_node.boxes_passed.append(j)
           if j not in temp_node.channels:
               temp_node.channels[j] = []
-              for i in range (0,32):
+              for i in range (0,NUM_OF_CHANNELS):
                 check = np.random.randint(1,11)
                 if(check==10):
                     temp_node.channels[j].append(3)
@@ -342,15 +342,24 @@ def walker_node(SIZE_OF_GRAPH,box_list,ask_clusters_unique):
 
 def cluster_aggregation(ask_clusters_unique, cluster_dictionary):
     report = []
+    cluster_report={}
     # print("uni: ",ask_clusters_unique)
+    #for each cluster
     for i in range (0,len(cluster_dictionary)):
+        #for all the nodes in that cluster
         for j in range(0,len(cluster_dictionary[i].nodes_in_cluster)):
             # print("node: ",cluster_dictionary[i].nodes_in_cluster[j].boxes_passed, "in cluster: ",i)
+            #for all the boxes that the node of that cluster passed
             for k in range(0,len(cluster_dictionary[i].nodes_in_cluster[j].boxes_passed)):
+                #for all the boxes that the walker node wants to know about
                 for l in range(0,len(ask_clusters_unique)):
+                    # cluster_report[ask_clusters_unique[l]]=[]
                     if(cluster_dictionary[i].nodes_in_cluster[j].boxes_passed[k]==ask_clusters_unique[l]):
-                        # print('yes ', ask_clusters[l])
                         report.append(ask_clusters_unique[l])
+                        #at the box that we found a match of, append the nodes perspective of channels, do this for all nodes in the cluster that have seen the box
+                        # cluster_report[ask_clusters_unique[l]]=cluster_dictionary[i].nodes_in_cluster[j].channels[k]
+
+
     fused_report = [] 
     for box in report: 
         if box not in fused_report: 
@@ -358,5 +367,7 @@ def cluster_aggregation(ask_clusters_unique, cluster_dictionary):
 
     fused_report.sort()
     print('report: ', fused_report) 
+
+
 
 main()

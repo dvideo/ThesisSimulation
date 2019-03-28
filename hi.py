@@ -383,7 +383,9 @@ def function1():
 
 def main():
 	trial = {}
-	trial[10]=[2,1,2,12]
-	for i in trial:
-		print (trial[i])
+	trial[10]=[[2,1,2,12]]
+	trial[10].append([1,2,6])
+	# for i in trial:
+	# 	print (trial[i])
+	print(trial[10])
 main()
