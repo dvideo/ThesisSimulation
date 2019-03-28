@@ -34,8 +34,8 @@ def generate_nodes(random_x,random_y,MAX_AXIS_VALUE):
     node_number = int(input("How many nodes would you like to run this simulation with? "))
     #print("Nodes: ",N)
     for i in range (node_number):
-        random_x.append(np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE)) #get a random float number within given range
-        random_y.append(np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE)) #get a random float number within given range
+        random_x.append(round(np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE),2)) #get a random float number within given range
+        random_y.append(round(np.random.uniform(-MAX_AXIS_VALUE, MAX_AXIS_VALUE),2)) #get a random float number within given range
     # print("random x:",random_x,"\nrandom y:",random_y)
 
 
@@ -62,7 +62,7 @@ def readFile(random_x,random_y):
 def node_object(random_x,random_y,dictionary):
 	#create node obj for the nodes and store those in a dictionary
 	for i in range(0,len(random_x)):
-		dictionary[i] = nc.Node(random_x[i],random_y[i])
+		dictionary[i] = nc.Node(random_x[i],random_y[i],i)
 
 
 main()

@@ -382,12 +382,8 @@ def function1():
 
 
 def main():
-	nuggets = [0,1]
-	for i in range(len(nuggets)):
-		if i == len(nuggets)-1:
-			print(i)
-
-	# print(len(nuggets))
-
-	# print(3//10)
+	trial = {}
+	trial[10]=[2,1,2,12]
+	for i in trial:
+		print (trial[i])
 main()
