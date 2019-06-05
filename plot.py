@@ -14,7 +14,7 @@ import clusters as cl
 def main():
     SIZE_OF_GRAPH = 100  #this value and max axis value must be divisible with a remainder of 0
     MAX_AXIS_VALUE = int(SIZE_OF_GRAPH/4) #for SIZE_OF_GRAPH of 20, this would be 10x10 to allowe the additional 10x10 on the walk
-    BOX_SIZE = 5 #length and width of boxes on graph
+    BOX_SIZE = 5  #length and width of boxes on graph
     NUM_OF_BOXES = int((SIZE_OF_GRAPH/BOX_SIZE)*2) #number of boxes in 1 row of graph (to get all boxes, square this number)
     NUM_OF_CHANNELS = 32 #number of channels per box
     NUM_OF_WALKS = 5
@@ -100,6 +100,8 @@ def main():
     walker_node(SIZE_OF_GRAPH,box_list,ask_clusters_unique)
 
     cluster_aggregation(ask_clusters_unique, cluster_dictionary)
+
+    print("boxNum: ", NUM_OF_BOXES*NUM_OF_BOXES)
     
 
 def create_boxes(x1,x2,y1,y2,box_list,SIZE_OF_GRAPH,BOX_SIZE,NUM_OF_BOXES):
@@ -338,7 +340,7 @@ def walker_node(SIZE_OF_GRAPH,box_list,ask_clusters_unique):
         if box not in ask_clusters_unique: 
             ask_clusters_unique.append(box)
     ask_clusters_unique.sort() 
-    print('boxes: ', ask_clusters_unique)
+    print('boxes: ', ask_clusters_unique, ' ', len(ask_clusters_unique))
 
 def cluster_aggregation(ask_clusters_unique, cluster_dictionary):
     report = []
@@ -366,7 +368,7 @@ def cluster_aggregation(ask_clusters_unique, cluster_dictionary):
             fused_report.append(box) 
 
     fused_report.sort()
-    print('report: ', fused_report) 
+    print('report: ', fused_report," ", len(fused_report)) 
 
 
 
